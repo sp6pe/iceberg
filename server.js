@@ -62,22 +62,22 @@ app.use(function(req, res, next) {
 
   if (req.isAuthenticated()) {
     var payload = req.isAuthenticated();
-    new User({ id: payload.sub })
-      .fetch()
-      .then(function(user) {
-        req.user = user;
-        next();
-      });
+    new User({ id: payload.sub }).fetch().then(function(user) {
+      req.user = user;
+      next();
+    });
   } else {
     next();
   }
 });
 
 if (app.get('env') === 'development') {
-  app.use(require('webpack-dev-middleware')(compiler, {
-    noInfo: true,
-    publicPath: config.output.publicPath
-  }));
+  app.use(
+    require('webpack-dev-middleware')(compiler, {
+      noInfo: true,
+      publicPath: config.output.publicPath
+    })
+  );
   app.use(require('webpack-hot-middleware')(compiler));
 }
 
@@ -107,9 +107,9 @@ app.use(function(req, res) {
     } else if (redirectLocation) {
       res.status(302).redirect(redirectLocation.pathname + redirectLocation.search);
     } else if (renderProps) {
-      var html = ReactDOM.renderToString(React.createElement(Provider, { store: store },
-        React.createElement(Router.RouterContext, renderProps)
-      ));
+      var html = ReactDOM.renderToString(
+        React.createElement(Provider, { store: store }, React.createElement(Router.RouterContext, renderProps))
+      );
       res.render('layout', {
         html: html,
         initialState: store.getState()
