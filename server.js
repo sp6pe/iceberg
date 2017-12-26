@@ -17,7 +17,6 @@ var sass = require('node-sass-middleware');
 var webpack = require('webpack');
 var config = require('./webpack.config');
 var Web3 = require('web3');
-var EthereumBlocks = require('ethereum-blocks');
 
 // Load environment variables from .env file
 dotenv.load();
