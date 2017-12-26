@@ -1,18 +1,18 @@
 var bookshelf = require('../config/bookshelf');
-import Block from './Block'
-import TransactionReceipt from './TransactionReceipt'
+var Block = require('./Block');
+var TransactionReceipt = require('./TransactionReceipt');
 
 var Transaction = bookshelf.Model.extend({
-  tableName: 'transactions',
-  hasTimestamps: true,
+	tableName: 'transactions',
+	hasTimestamps: true,
 
-  block: function() {
-    return this.belongTo(Block);
-  }
+	block: function() {
+		return this.belongTo(Block);
+	},
 
-  transactionReceipts: function() {
-    return this.hasOne(TransactionReceipt);
-  }
+	transactionReceipts: function() {
+		return this.hasOne(TransactionReceipt);
+	}
 });
 
 module.exports = Transaction;

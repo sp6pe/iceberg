@@ -1,5 +1,5 @@
 var bookshelf = require('../config/bookshelf');
-import Transaction from './Transaction';
+var Transaction = require('./Transaction');
 
 var Block = bookshelf.Model.extend({
 	tableName: 'blocks',
