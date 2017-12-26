@@ -3,8 +3,8 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('transaction_receipts', function(table) {
       table.increments('id').unsigned().primary();
       table.string('contract_address', 40);
-      table.decimal('cumulative_gas_used');
-      table.decimal('gas_used');
+      table.integer('cumulative_gas_used');
+      table.integer('gas_used');
       table.string('logs_boom');
       table.enum('status', ['0x0','0x1']);
       table.string('root');

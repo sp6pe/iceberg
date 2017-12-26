@@ -2,12 +2,12 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('transactions', function(table) {
       table.increments('id').unsigned().primary();
-      table.string('block_hash', 32);
-      table.decimal('block_number');
+      table.string('block_hash', 64);
+      table.integer('block_number');
       table.string('from', 40);
-      table.decimal('gas');
-      table.decimal('gas_price');
-      table.string('hash', 32);
+      table.integer('gas');
+      table.integer('gas_price');
+      table.string('hash', 64);
       table.string('input');
       table.integer('nonce');
       table.string('to', 40);
