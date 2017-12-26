@@ -1,5 +1,5 @@
 var bookshelf = require('../config/bookshelf');
-import TransactionReceipt from './TransactionReceipt'
+const TransactionReceipt = require('./TransactionReceipt')
 
 var Log = bookshelf.Model.extend({
   tableName: 'logs',

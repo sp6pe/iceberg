@@ -1,6 +1,6 @@
 var bookshelf = require('../config/bookshelf');
-import Transaction from './Transaction'
-import Log from './Log'
+const Transaction = require ('./Transaction')
+const Log = ('./Log')
 
 var TransactionReceipt = bookshelf.Model.extend({
   tableName: 'transaction_receipts',
@@ -8,7 +8,7 @@ var TransactionReceipt = bookshelf.Model.extend({
 
   transaction: function() {
     return this.belongTo(Transaction);
-  }
+  },
 
   logs: function() {
     return this.hasMany(Log);

@@ -47,6 +47,7 @@
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.0.1",
     "request": "^2.69.0",
+    "web3": "^1.0.0-beta.27",
     "webpack": "^1.12.14",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.10.0",

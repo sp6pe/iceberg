@@ -1,6 +1,6 @@
 var bookshelf = require('../config/bookshelf');
-import Block from './Block'
-import TransactionReceipt from './TransactionReceipt'
+const Block = require('./Block')
+const TransactionReceipt = require('./TransactionReceipt')
 
 var Transaction = bookshelf.Model.extend({
   tableName: 'transactions',
@@ -8,7 +8,7 @@ var Transaction = bookshelf.Model.extend({
 
   block: function() {
     return this.belongTo(Block);
-  }
+  },
 
   transactionReceipts: function() {
     return this.hasOne(TransactionReceipt);
