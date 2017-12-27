@@ -1,10 +1,10 @@
 exports.up = function(knex, Promise) {
 	return Promise.all([
 		knex.schema.table('transactions', function(table) {
-			table.string('block_hash');
+			table.text('block_hash');
 			table.string('from', 42);
-			table.decimal('gas_price');
-			table.string('hash');
+			table.bigInteger('gas_price');
+			table.text('hash');
 			table.string('to', 42);
 		})
 	]);

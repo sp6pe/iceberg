@@ -46,7 +46,7 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
           block_number: txndata.blockNumber,
           from: txndata.from,
           gas: txndata.gas,
-          // gas_price: txndata.gasPrice,
+          gas_price: txndata.gasPrice,
           hash: txndata.hash,
           input: txndata.input,
           nonce: txndata.nonce,
