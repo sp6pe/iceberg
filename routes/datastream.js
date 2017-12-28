@@ -64,6 +64,11 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
           .catch(function(err) {
             console.log(err);
           });
+
+        web3.eth.getTransactionReceipt(blockdata.transactions[t], function(txnreceipterror, txnreceiptdata) {
+          if (txnerror) console.log(txnreceipterror);
+          else console.log('txnreceiptdata');
+        });
       });
     }
   }
