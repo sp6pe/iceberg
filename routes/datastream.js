@@ -73,24 +73,3 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
     }
   }
 });
-
-//     .save(null, { method: 'insert' })
-//     .then(function() {
-//       console.log('block success');
-//       //Loop through transactions to add to transaction table
-//       // if (blockdata.transactions != null) {
-//       // for (var t = 0; t < blockdata.transactions.length; t++) {
-//       //   web3.eth.getTransaction('0xff1be54c15d53fbe11ab5cbf4da477169436992be92c37db3df19e22b6c8c769', function(
-//       //     txnerror,
-//       //     txndata
-//       //   ) {
-//       //     if (txnerror) console.log(txnerror);
-//       //     else console.log('txndata');
-//       //   });
-//       process.exit(0);
-//       // }
-//     })
-//     .catch(function(err) {
-//       console.log(err);
-//     });
-// });
