@@ -1,47 +1,91 @@
 const Web3 = require('web3');
-var dotenv = require('dotenv');
-var Block = require('../models/Block');
+const dotenv = require('dotenv');
+const Block = require('../models/Block');
+const Transaction = require('../models/Transaction');
+var Promise = require('bluebird');
 
 dotenv.load();
 
 const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/' + dotenv.infurakey));
 
-//Get Blockdata of latest block
-web3.eth.getBlockNumber(function(error, block) {
-  if (error) console.error(error);
-  else
-    web3.eth.getBlock(2000001, function(error, result) {
-      if (error) console.log(error);
-      else
-        console.log(result)
-        Block.forge({
-          difficulty: result.difficulty,
-          extra_data: result.extraData,
-          gas_limit: result.gasLimit,
-          gas_used: result.gasUsed,
-          hash: result.hash,
-          // logs_bloom: result.logsBloom,
-          miner: result.miner.substring(2),
-          mix_hash: result.mixHash,
-          nonce: result.nonce,
-          number: result.number,
-          parent_hash: result.parentHash.substring(2),
-          receipts_root: result.receiptsRoot.substring(2),
-          sha_uncles: result.sha3Uncles.substring(2),
-          size: result.size,
-          state_root: result.stateRoot.substring(2),
-          block_timestamp: result.timestamp,
-          total_difficulty: result.totalDifficulty,
-          transactions_root: result.transactionsRoot,
-          uncles: result.uncles
+web3.eth.getBlock(4798454, function(blockerror, blockdata) {
+  if (blockerror) console.log(blockerror);
+  else console.log(blockdata);
+  var save_blocks = Block.forge({
+    difficulty: blockdata.difficulty,
+    extra_data: blockdata.extraData,
+    gas_limit: blockdata.gasLimit,
+    gas_used: blockdata.gasUsed,
+    hash: blockdata.hash,
+    // logs_bloom: blockdata.logsBloom,
+    miner: blockdata.miner.substring(2),
+    mix_hash: blockdata.mixHash,
+    nonce: blockdata.nonce,
+    number: blockdata.number,
+    parent_hash: blockdata.parentHash.substring(2),
+    receipts_root: blockdata.receiptsRoot.substring(2),
+    sha_uncles: blockdata.sha3Uncles.substring(2),
+    size: blockdata.size,
+    state_root: blockdata.stateRoot.substring(2),
+    block_timestamp: blockdata.timestamp,
+    total_difficulty: blockdata.totalDifficulty,
+    transactions_root: blockdata.transactionsRoot,
+    uncles: blockdata.uncles
+  })
+    .save(null, { method: 'insert' })
+    .then(function() {
+      console.log('block success');
+    });
+  if (blockdata.transactions != []) {
+    for (var t = 0; t < blockdata.transactions.length; t++) {
+      web3.eth.getTransaction(blockdata.transactions[t], function(txnerror, txndata) {
+        if (txnerror) console.log(txnerror);
+        else console.log(txndata);
+        Transaction.forge({
+          block_hash: txndata.blockHash,
+          block_number: txndata.blockNumber,
+          from: txndata.from,
+          gas: txndata.gas,
+          gas_price: txndata.gasPrice,
+          hash: txndata.hash,
+          input: txndata.input,
+          nonce: txndata.nonce,
+          to: txndata.to,
+          transaction_index: txndata.transactionIndex,
+          value: txndata.value,
+          v: txndata.v,
+          r: txndata.r,
+          s: txndata.r
         })
           .save(null, { method: 'insert' })
           .then(function() {
-            console.log('success');
-            process.exit(0);
+            console.log('txn success');
           })
           .catch(function(err) {
             console.log(err);
           });
-    });
+      });
+    }
+  }
 });
+
+//     .save(null, { method: 'insert' })
+//     .then(function() {
+//       console.log('block success');
+//       //Loop through transactions to add to transaction table
+//       // if (blockdata.transactions != null) {
+//       // for (var t = 0; t < blockdata.transactions.length; t++) {
+//       //   web3.eth.getTransaction('0xff1be54c15d53fbe11ab5cbf4da477169436992be92c37db3df19e22b6c8c769', function(
+//       //     txnerror,
+//       //     txndata
+//       //   ) {
+//       //     if (txnerror) console.log(txnerror);
+//       //     else console.log('txndata');
+//       //   });
+//       process.exit(0);
+//       // }
+//     })
+//     .catch(function(err) {
+//       console.log(err);
+//     });
+// });
