@@ -2,6 +2,7 @@ const Web3 = require('web3');
 const dotenv = require('dotenv');
 const Block = require('../models/Ethereum/Block');
 const Transaction = require('../models/Ethereum/Transaction');
+const Log = require('../models/Ethereum/Transaction');
 var Promise = require('bluebird');
 
 dotenv.load();
@@ -40,40 +41,44 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
     for (var t = 0; t < blockdata.transactions.length; t++) {
       web3.eth.getTransaction(blockdata.transactions[t], function(txnerror, txndata) {
         if (txnerror) console.log(txnerror);
-        else console.log(txndata);
-        Transaction.forge({
-          block_hash: txndata.blockHash,
-          block_number: txndata.blockNumber,
-          from: txndata.from,
-          gas: txndata.gas,
-          gas_price: txndata.gasPrice,
-          hash: txndata.hash,
-          input: txndata.input,
-          nonce: txndata.nonce,
-          to: txndata.to,
-          transaction_index: txndata.transactionIndex,
-          value: txndata.value,
-          v: txndata.v,
-          r: txndata.r,
-          s: txndata.r
-        })
-          .save(null, { method: 'insert' })
-          .then(function() {
-            console.log('txn success');
+        else
+          // console.log(txndata);
+          Transaction.forge({
+            block_hash: txndata.blockHash,
+            block_number: txndata.blockNumber,
+            from: txndata.from,
+            gas: txndata.gas,
+            gas_price: txndata.gasPrice,
+            hash: txndata.hash,
+            input: txndata.input,
+            nonce: txndata.nonce,
+            to: txndata.to,
+            transaction_index: txndata.transactionIndex,
+            value: txndata.value,
+            v: txndata.v,
+            r: txndata.r,
+            s: txndata.r
           })
-          .catch(function(err) {
-            console.log(err);
-          });
+            .save(null, { method: 'insert' })
+            .then(function() {
+              console.log('txn success');
+            })
+            .catch(function(err) {
+              console.log(err);
+              console.log(txndata.hash);
+            });
 
-        web3.eth.getTransactionReceipt(txndata.hash, function(txnreceipterror, txnreceiptdata) {
-          if (txnerror) {
-            console.log(txnreceipterror);
-          } else if (txnreceiptdata == null) {
-            console.log('no receipt');
-          } else {
-            console.log(txnreceiptdata);
-          }
-        });
+        // web3.eth.getTransactionReceipt(txndata.hash, function(txnreceipterror, txnreceiptdata) {
+        //   if (txnerror) {
+        //     console.log(txnreceipterror);
+        //   } else if (txnreceiptdata == null) {
+        //     console.log('no receipt');
+        //   } else {
+        //     console.log(txnreceiptdata);
+        //   }
+        // });
+
+        txnreceiptdata.logs;
       });
     }
   }
