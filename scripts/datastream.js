@@ -1,9 +1,9 @@
 const Web3 = require('web3');
 const dotenv = require('dotenv');
-const Block = require('../models/Ethereum/Block');
-const Transaction = require('../models/Ethereum/Transaction');
-const TransactionReceipt = require('../models/Ethereum/TransactionReceipt');
-const Log = require('../models/Ethereum/Log');
+const EthBlock = require('../models/Ethereum/EthBlock');
+const EthTransaction = require('../models/Ethereum/EthTransaction');
+const EthTransactionReceipt = require('../models/Ethereum/EthTransactionReceipt');
+const EthLog = require('../models/Ethereum/EthLog');
 var Promise = require('bluebird');
 
 dotenv.load();
@@ -13,7 +13,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io
 web3.eth.getBlock(4825462, function(blockerror, blockdata) {
   if (blockerror) console.log(blockerror);
   else console.log(blockdata);
-  var save_blocks = Block.forge({
+  var save_blocks = EthBlock.forge({
     difficulty: blockdata.difficulty,
     extra_data: blockdata.extraData,
     gas_limit: blockdata.gasLimit,
@@ -36,14 +36,18 @@ web3.eth.getBlock(4825462, function(blockerror, blockdata) {
     .save(null, { method: 'insert' })
     .then(function() {
       console.log('block success');
-    });
+    })
+    .catch(function(err){
+      process.exit(0);
+    })
+
   if (blockdata.transactions != []) {
     for (var t = 0; t < blockdata.transactions.length; t++) {
       web3.eth.getTransaction(blockdata.transactions[t], function(txnerror, txndata) {
         if (txnerror) console.log(txnerror);
         else
           // console.log(txndata);
-          Transaction.forge({
+          EthTransaction.forge({
             block_hash: txndata.blockHash,
             block_number: txndata.blockNumber,
             from: txndata.from,
@@ -65,6 +69,7 @@ web3.eth.getBlock(4825462, function(blockerror, blockdata) {
             })
             .catch(function(err) {
               console.log(err);
+              process.exit(0);
             });
 
         web3.eth.getTransactionReceipt(txndata.hash, function(txnreceipterror, txnreceiptdata) {
@@ -74,11 +79,11 @@ web3.eth.getBlock(4825462, function(blockerror, blockdata) {
             console.log('no receipt');
           } else {
             console.log(txnreceiptdata);
-            TransactionReceipt.forge({
+            EthTransactionReceipt.forge({
               contract_address: txnreceiptdata.contractAddress,
               cumulative_gas_used: txnreceiptdata.cumulativeGasUsed,
               gas_used: txnreceiptdata.gasUsed,
-              logs_boom: txnreceiptdata.logsBloom,
+              logs_bloom: txnreceiptdata.logsBloom,
               status: txnreceiptdata.status
               // transaction_id: Transaction.id
             })
@@ -88,11 +93,12 @@ web3.eth.getBlock(4825462, function(blockerror, blockdata) {
               })
               .catch(function(err) {
                 console.log(err);
+                process.exit(0)
               });
           }
 
           for (var l = 0; l < txnreceiptdata.logs.length; l++) {
-            Log.forge({
+            EthLog.forge({
               address: txnreceiptdata.logs[l].address,
               topics: JSON.stringify(txnreceiptdata.logs[l].topics),
               data: txnreceiptdata.logs[l].data,
@@ -107,6 +113,7 @@ web3.eth.getBlock(4825462, function(blockerror, blockdata) {
               })
               .catch(function(err) {
                 console.log(err);
+                process.exit(0);
               });
           }
         });

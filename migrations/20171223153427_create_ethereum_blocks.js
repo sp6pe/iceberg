@@ -1,6 +1,6 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
-    knex.schema.createTable('blocks', function(table) {
+    knex.schema.createTable('ethereum_blocks', function(table) {
       table.increments('id').unsigned().primary();
       table.string('difficulty');
       table.string('extra_data');
@@ -28,6 +28,6 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    knex.schema.dropTable('blocks')
+    knex.schema.dropTable('ethereum_blocks')
   ])
 };
