@@ -10,7 +10,7 @@ dotenv.load();
 
 const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/' + dotenv.infurakey));
 
-web3.eth.getBlock(4298454, function(blockerror, blockdata) {
+web3.eth.getBlock(4825462, function(blockerror, blockdata) {
   if (blockerror) console.log(blockerror);
   else console.log(blockdata);
   var save_blocks = Block.forge({
@@ -31,7 +31,7 @@ web3.eth.getBlock(4298454, function(blockerror, blockdata) {
     block_timestamp: blockdata.timestamp,
     total_difficulty: blockdata.totalDifficulty,
     transactions_root: blockdata.transactionsRoot,
-    uncles: blockdata.uncles
+    uncles: JSON.stringify(blockdata.uncles)
   })
     .save(null, { method: 'insert' })
     .then(function() {
@@ -94,11 +94,11 @@ web3.eth.getBlock(4298454, function(blockerror, blockdata) {
           for (var l = 0; l < txnreceiptdata.logs.length; l++) {
             Log.forge({
               address: txnreceiptdata.logs[l].address,
-              // topics: txnreceiptdata.logs[l].topics,
+              topics: JSON.stringify(txnreceiptdata.logs[l].topics),
               data: txnreceiptdata.logs[l].data,
               log_index: txnreceiptdata.logs[l].logIndex,
               removed: txnreceiptdata.logs[l].removed,
-              log_id: txnreceiptgitdata.logs[l].id
+              log_id: txnreceiptdata.logs[l].id
               // transaction_receipts_id: txndata.id
             })
               .save(null, { method: 'insert' })
