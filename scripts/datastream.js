@@ -18,16 +18,15 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
     gas_limit: blockdata.gasLimit,
     gas_used: blockdata.gasUsed,
     hash: blockdata.hash,
-    // logs_bloom: blockdata.logsBloom,
-    miner: blockdata.miner.substring(2),
+    logs_bloom: blockdata.logsBloom,
     mix_hash: blockdata.mixHash,
     nonce: blockdata.nonce,
     number: blockdata.number,
-    parent_hash: blockdata.parentHash.substring(2),
-    receipts_root: blockdata.receiptsRoot.substring(2),
-    sha_uncles: blockdata.sha3Uncles.substring(2),
+    parent_hash: blockdata.parentHash,
+    receipts_root: blockdata.receiptsRoot,
+    sha_uncles: blockdata.sha3Uncles,
     size: blockdata.size,
-    state_root: blockdata.stateRoot.substring(2),
+    state_root: blockdata.stateRoot,
     block_timestamp: blockdata.timestamp,
     total_difficulty: blockdata.totalDifficulty,
     transactions_root: blockdata.transactionsRoot,
@@ -58,8 +57,7 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
             v: txndata.v,
             r: txndata.r,
             s: txndata.r
-          })
-            .save(null, { method: 'insert' })
+          }).save(null, { method: 'insert' })
             .then(function() {
               console.log('txn success');
             })
@@ -76,9 +74,9 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
         //   } else {
         //     console.log(txnreceiptdata);
         //   }
-        // });
+        // // });
 
-        txnreceiptdata.logs;
+        // txnreceiptdata.logs;
       });
     }
   }

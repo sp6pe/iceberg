@@ -2,7 +2,7 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('transaction_receipts', function(table) {
       table.increments('id').unsigned().primary();
-      table.string('contract_address', 40);
+      table.string('contract_address', 42);
       table.integer('cumulative_gas_used');
       table.integer('gas_used');
       table.string('logs_boom');

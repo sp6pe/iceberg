@@ -2,7 +2,7 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('logs', function(table) {
       table.increments('id').unsigned().primary();
-      table.string('address', 40);
+      table.string('address', 42);
       table.json('topics');
       table.string('data');
       table.integer('log_index');

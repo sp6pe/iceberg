@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
       table.integer('gas');
       table.bigInteger('gas_price');
       table.string('hash');
-      table.string('input');
+      table.text('input');
       table.integer('nonce');
       table.string('to', 42);
       table.integer('transaction_index');
