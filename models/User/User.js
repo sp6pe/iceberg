@@ -1,6 +1,6 @@
 var crypto = require('crypto');
 var bcrypt = require('bcrypt-nodejs');
-var bookshelf = require('../config/bookshelf');
+var bookshelf = require('../../config/bookshelf');
 
 var User = bookshelf.Model.extend({
   tableName: 'users',

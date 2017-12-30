@@ -1,7 +1,7 @@
 const Web3 = require('web3');
 const dotenv = require('dotenv');
-const Block = require('../models/Block');
-const Transaction = require('../models/Transaction');
+const Block = require('../models/Ethereum/Block');
+const Transaction = require('../models/Ethereum/Transaction');
 var Promise = require('bluebird');
 
 dotenv.load();

@@ -1,4 +1,4 @@
-var bookshelf = require('../config/bookshelf');
+var bookshelf = require('../../config/bookshelf');
 const Transaction = require('./Transaction');
 
 var Block = bookshelf.Model.extend({

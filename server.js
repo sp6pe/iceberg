@@ -26,11 +26,11 @@ require('babel-core/register');
 require('babel-polyfill');
 
 // Models
-var User = require('./models/User');
+var User = require('./models/User/User');
 
 //Routes
-var blocks = require('./routes/blocks');
-app.use('/blocks', blocks);
+// var blocks = require('./routes/blocks');
+// app.use('/blocks', blocks);
 
 // Controllers
 var userController = require('./controllers/user');

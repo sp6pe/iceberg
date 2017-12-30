@@ -1,4 +1,4 @@
-var bookshelf = require('../config/bookshelf');
+var bookshelf = require('../../config/bookshelf');
 const Block = require('./Block');
 const TransactionReceipt = require('./TransactionReceipt');
 
