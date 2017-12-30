@@ -10,7 +10,7 @@ dotenv.load();
 
 const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/' + dotenv.infurakey));
 
-web3.eth.getBlock(4825462, function(blockerror, blockdata) {
+web3.eth.getBlock(425462, function(blockerror, blockdata) {
   if (blockerror) console.log('block error', blockerror);
   EthBlock.forge({
     difficulty: blockdata.difficulty,
