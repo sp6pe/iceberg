@@ -2,14 +2,15 @@ const Web3 = require('web3');
 const dotenv = require('dotenv');
 const Block = require('../models/Ethereum/Block');
 const Transaction = require('../models/Ethereum/Transaction');
-const Log = require('../models/Ethereum/Transaction');
+const TransactionReceipt = require('../models/Ethereum/TransactionReceipt');
+const Log = require('../models/Ethereum/Log');
 var Promise = require('bluebird');
 
 dotenv.load();
 
 const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/' + dotenv.infurakey));
 
-web3.eth.getBlock(4798454, function(blockerror, blockdata) {
+web3.eth.getBlock(4298454, function(blockerror, blockdata) {
   if (blockerror) console.log(blockerror);
   else console.log(blockdata);
   var save_blocks = Block.forge({
@@ -57,26 +58,58 @@ web3.eth.getBlock(4798454, function(blockerror, blockdata) {
             v: txndata.v,
             r: txndata.r,
             s: txndata.r
-          }).save(null, { method: 'insert' })
+          })
+            .save(null, { method: 'insert' })
             .then(function() {
               console.log('txn success');
             })
             .catch(function(err) {
               console.log(err);
-              console.log(txndata.hash);
             });
 
-        // web3.eth.getTransactionReceipt(txndata.hash, function(txnreceipterror, txnreceiptdata) {
-        //   if (txnerror) {
-        //     console.log(txnreceipterror);
-        //   } else if (txnreceiptdata == null) {
-        //     console.log('no receipt');
-        //   } else {
-        //     console.log(txnreceiptdata);
-        //   }
-        // // });
+        web3.eth.getTransactionReceipt(txndata.hash, function(txnreceipterror, txnreceiptdata) {
+          if (txnerror) {
+            console.log(txnreceipterror);
+          } else if (txnreceiptdata == null) {
+            console.log('no receipt');
+          } else {
+            console.log(txnreceiptdata);
+            TransactionReceipt.forge({
+              contract_address: txnreceiptdata.contractAddress,
+              cumulative_gas_used: txnreceiptdata.cumulativeGasUsed,
+              gas_used: txnreceiptdata.gasUsed,
+              logs_boom: txnreceiptdata.logsBloom,
+              status: txnreceiptdata.status
+              // transaction_id: Transaction.id
+            })
+              .save(null, { method: 'insert' })
+              .then(function() {
+                console.log('txnreceipt success');
+              })
+              .catch(function(err) {
+                console.log(err);
+              });
+          }
 
-        // txnreceiptdata.logs;
+          for (var l = 0; l < txnreceiptdata.logs.length; l++) {
+            Log.forge({
+              address: txnreceiptdata.logs[l].address,
+              // topics: txnreceiptdata.logs[l].topics,
+              data: txnreceiptdata.logs[l].data,
+              log_index: txnreceiptdata.logs[l].logIndex,
+              removed: txnreceiptdata.logs[l].removed,
+              log_id: txnreceiptgitdata.logs[l].id
+              // transaction_receipts_id: txndata.id
+            })
+              .save(null, { method: 'insert' })
+              .then(function() {
+                console.log('log success');
+              })
+              .catch(function(err) {
+                console.log(err);
+              });
+          }
+        });
       });
     }
   }

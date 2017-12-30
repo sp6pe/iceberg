@@ -5,17 +5,14 @@ exports.up = function(knex, Promise) {
       table.string('contract_address', 42);
       table.integer('cumulative_gas_used');
       table.integer('gas_used');
-      table.string('logs_boom');
-      table.enum('status', ['0x0','0x1']);
-      table.string('root');
-      table.integer('transaction_id').unsigned().references('transactions.id')
+      table.text('logs_boom');
+      table.enum('status', ['0x0', '0x1']);
+      table.integer('transaction_id').unsigned().references('transactions.id');
       table.timestamps();
     })
   ]);
 };
 
 exports.down = function(knex, Promise) {
-  return Promise.all([
-    knex.schema.dropTable('transaction_receipts')
-  ])
+  return Promise.all([knex.schema.dropTable('transaction_receipts')]);
 };
