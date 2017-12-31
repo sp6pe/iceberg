@@ -10,79 +10,77 @@ dotenv.load();
 
 const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/' + dotenv.infurakey));
 
-starting_block = process.argv[2]
-ending_block = process.argv[3]
+starting_block = process.argv[2];
+ending_block = process.argv[3];
 
-for (var i = starting_block; i < ending_block; i++){
-  web3.eth.getBlock(i)
-  .then(function(block){
-    blockData = create_block_obj(block)
-    EthBlock.forge(blockData)
-      .save(null, { method: 'insert' })
-      .then(function(savedBlock){
-        console.log('saves the block', savedBlock)
-        if (block.transactions != []){
-          console.log(block.transactions.length, '# of txxx')
-          for (var t = 0; t < block.transactions.length; t++) {
-            console.log(t, 'looping')
-            web3.eth.getTransaction(block.transactions[t])
-            .then(function(transaction){
-              txnData = create_transaction_obj(transaction, savedBlock.id)
-              EthTransaction.forge(txnData)
-              .save(null, { method: 'insert' })
-              .then(function(savedTransaction){
-
-                web3.eth.getTransactionReceipt(transaction.hash)
-                .then(function(transactionReceipt){
-                  txnReceiptData = create_transaction_receipt_obj(transactionReceipt,savedTransaction.id)
-                  EthTransactionReceipt.forge(txnReceiptData)
-                  .save(null, { method: 'insert' })
-                  .then(function(savedTrasnactionReceipt){
-
-                    //LOGS
-                    if (transactionReceipt.logs != []){
-                      for (var l = 0; l < transactionReceipt.logs.length; l++){
-                        logsObj = create_logs_obj(transactionReceipt.logs[l], savedTrasnactionReceipt.id)
-                        EthLog.forge(logsObj)
-                        .save(null, { method: 'insert' })
-                        .catch(function(err){
-                          console.log(err,'error saving log',transactionReceipt.logs[l].address)
+for (var i = 300; i < 1000; i++) {
+  web3.eth
+    .getBlock(i)
+    .then(function(block) {
+      console.log(i);
+      blockData = create_block_obj(block);
+      EthBlock.forge(blockData)
+        .save(null, { method: 'insert' })
+        .then(function(savedBlock) {
+          console.log('saving block');
+          if (block.transactions.length != 0) {
+            console.log(block.transactions.length, '# of txxx');
+            for (var t = 0; t < block.transactions.length; t++) {
+              console.log(t, block.transactions[t], 'looping');
+              web3.eth
+                .getTransaction(block.transactions[t])
+                .then(function(transaction) {
+                  txnData = create_transaction_obj(transaction, savedBlock.id);
+                  EthTransaction.forge(txnData)
+                    .save(null, { method: 'insert' })
+                    .then(function(savedTransaction) {
+                      web3.eth
+                        .getTransactionReceipt(transaction.hash)
+                        .then(function(transactionReceipt) {
+                          txnReceiptData = create_transaction_receipt_obj(transactionReceipt, savedTransaction.id);
+                          EthTransactionReceipt.forge(txnReceiptData)
+                            .save(null, { method: 'insert' })
+                            .then(function(savedTrasnactionReceipt) {
+                              //LOGS
+                              if (transactionReceipt.logs != []) {
+                                for (var l = 0; l < transactionReceipt.logs.length; l++) {
+                                  logsObj = create_logs_obj(transactionReceipt.logs[l], savedTrasnactionReceipt.id);
+                                  EthLog.forge(logsObj).save(null, { method: 'insert' }).catch(function(err) {
+                                    console.log(err, 'error saving log', transactionReceipt.logs[l].address);
+                                  });
+                                }
+                              }
+                            })
+                            .catch(function(err) {
+                              console.log(err, 'error saving txReceitpt', transaction.hash);
+                            });
                         })
-                      }
-                    }
-
-                  })
-                  .catch(function(err){
-                    console.log(err,'error saving txReceitpt',transaction.hash)
-                  })
+                        .catch(function(err) {
+                          console.log(err, 'error getting txReceitpt', transaction.hash);
+                        });
+                    })
+                    .catch(function(err) {
+                      console.log(err, 'error saving transaction', transaction.hash);
+                    });
                 })
-                .catch(function(err){
-                  console.log(err,'error getting txReceitpt',transaction.hash)
-                })
-              })
-              .catch(function(err){
-                console.log(err, 'error saving transaction', transaction.hash)
-              })
-            })
-            .catch(function(err){
-              console.log(err, 'error getting transaction', block.transactions[t])
-            })
+                .catch(function(err) {
+                  console.log(err, 'error getting transaction', block.transactions[t]);
+                });
+            }
           }
-        }
-      })
-      .catch(function(err){
-        console.log(err, 'error saving block', i)
-      })
-  })
-  .catch(function(err){
-    console.log(err, 'error getting block', i)
-  })
+        })
+        .catch(function(err) {
+          console.log(err, 'error saving block', i);
+        });
+    })
+    .catch(function(err) {
+      console.log(err, 'error getting block', i);
+    });
 }
 
-
-function create_block_obj (blockObj){
+function create_block_obj(blockObj) {
   if (blockObj == null) {
-    return false
+    return false;
   }
   return {
     difficulty: blockObj.difficulty,
@@ -103,13 +101,12 @@ function create_block_obj (blockObj){
     total_difficulty: blockObj.totalDifficulty,
     transactions_root: blockObj.transactionsRoot,
     uncles: JSON.stringify(blockObj.uncles)
-  }
+  };
 }
 
-
-function create_transaction_obj (txnObj, savedBlockId){
+function create_transaction_obj(txnObj, savedBlockId) {
   if (txnObj == null) {
-    return false
+    return false;
   }
   return {
     block_hash: txnObj.blockHash,
@@ -127,13 +124,12 @@ function create_transaction_obj (txnObj, savedBlockId){
     r: txnObj.r,
     s: txnObj.r,
     block_id: savedBlockId
-  }
+  };
 }
 
-
-function create_transaction_receipt_obj (txnReceiptObj, savedTransactionId){
+function create_transaction_receipt_obj(txnReceiptObj, savedTransactionId) {
   if (txnReceiptObj == null) {
-    return false
+    return false;
   }
   return {
     contract_address: txnReceiptObj.contractAddress,
@@ -142,13 +138,12 @@ function create_transaction_receipt_obj (txnReceiptObj, savedTransactionId){
     logs_bloom: txnReceiptObj.logsBloom,
     status: txnReceiptObj.status,
     transaction_id: savedTransactionId
-  }
+  };
 }
 
-
-function create_logs_obj (logsObj, savedTrasnactionReceiptId){
+function create_logs_obj(logsObj, savedTrasnactionReceiptId) {
   if (logsObj == null) {
-    return false
+    return false;
   }
   return {
     address: logsObj.address,
@@ -158,5 +153,5 @@ function create_logs_obj (logsObj, savedTrasnactionReceiptId){
     removed: logsObj.removed,
     log_id: logsObj.id,
     transaction_receipts_id: savedTrasnactionReceiptId
-  }
+  };
 }
